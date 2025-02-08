@@ -8,12 +8,19 @@ import SliderControl from '@/components/SliderControl';
 
 import Equation from './Equation';
 import styles from './DivisionGroupsDemo.module.css';
+import { LayoutGroup, motion } from 'framer-motion';
 
 function DivisionGroupsDemo({
   numOfItems = 12,
   initialNumOfGroups = 1,
   includeRemainderArea,
 }) {
+  // const [circles] = React.useState(() => {
+  //   return range(numOfItems).map((_item, index) => ({ index, id: crypto.randomUUID() }));
+  // })
+
+  const circlesRef = React.useRef(range(numOfItems).map((_item, index) => ({ index, id: crypto.randomUUID() })));
+
   const [numOfGroups, setNumOfGroups] = React.useState(
     initialNumOfGroups
   );
@@ -31,12 +38,12 @@ function DivisionGroupsDemo({
   const gridStructure =
     numOfGroups < 4
       ? {
-          gridTemplateColumns: `repeat(${numOfGroups}, 1fr)`,
-        }
+        gridTemplateColumns: `repeat(${numOfGroups}, 1fr)`,
+      }
       : {
-          gridTemplateColumns: '1fr 1fr',
-          gridTemplateRows: '1fr 1fr',
-        };
+        gridTemplateColumns: '1fr 1fr',
+        gridTemplateRows: '1fr 1fr',
+      };
 
   return (
     <Card as="section" className={styles.wrapper}>
@@ -54,40 +61,45 @@ function DivisionGroupsDemo({
         />
       </header>
 
-      <div className={styles.demoWrapper}>
-        <div
-          className={clsx(styles.demoArea)}
-          style={gridStructure}
-        >
-          {range(numOfGroups).map((groupIndex) => (
-            <div key={groupIndex} className={styles.group}>
-              {range(numOfItemsPerGroup).map((index) => {
-                return (
-                  <div
-                    key={index}
-                    className={styles.item}
-                  />
-                );
-              })}
-            </div>
-          ))}
+      <LayoutGroup>
+        <div className={styles.demoWrapper}>
+          <div
+            className={clsx(styles.demoArea)}
+            style={gridStructure}
+          >
+            {range(numOfGroups).map((groupIndex) => (
+              <div key={groupIndex} className={styles.group}>
+                {range(numOfItemsPerGroup).map((index) => {
+                  const circleIndex = (groupIndex * numOfItemsPerGroup) + index;
+                  const circleId = circlesRef.current[circleIndex].id;
+                  return (
+                    <motion.div
+                      layoutId={circleId}
+                      transition={{ type: 'spring', damping: 20, stiffness: 100 }}
+                      key={circleId}
+                      className={styles.item}
+                    />
+                  );
+                })}
+              </div>
+            ))}
+          </div>
         </div>
-      </div>
 
-      {includeRemainderArea && (
-        <div className={styles.remainderArea}>
-          <p className={styles.remainderHeading}>
-            Remainder Area
-          </p>
+        {includeRemainderArea && (
+          <div className={styles.remainderArea}>
+            <p className={styles.remainderHeading}>
+              Remainder Area
+            </p>
 
-          {range(remainder).map((index) => {
-            return (
-              <div key={index} className={styles.item} />
-            );
-          })}
-        </div>
-      )}
-
+            {range(remainder).map((index) => {
+              return (
+                <div key={index} className={styles.item} />
+              );
+            })}
+          </div>
+        )}
+      </LayoutGroup>
       <Equation
         dividend={numOfItems}
         divisor={numOfGroups}
