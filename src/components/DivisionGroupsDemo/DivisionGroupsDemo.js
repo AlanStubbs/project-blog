@@ -93,8 +93,14 @@ function DivisionGroupsDemo({
             </p>
 
             {range(remainder).map((index) => {
+              const circleId = circlesRef.current.at(-1 - index).id;
               return (
-                <div key={index} className={styles.item} />
+                <motion.div
+                  layoutId={circleId}
+                  transition={{ type: 'spring', damping: 20, stiffness: 100 }}
+                  key={circleId}
+                  className={styles.item}
+                />
               );
             })}
           </div>
