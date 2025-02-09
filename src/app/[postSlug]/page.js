@@ -10,8 +10,13 @@ import CodeSnippet from '@/components/CodeSnippet';
 import dynamic from 'next/dynamic';
 import Spinner from '@/components/Spinner';
 
-const DivisionsGroupDemo = dynamic(
+const DivisionGroupsDemo = dynamic(
   () => import('@/components/DivisionGroupsDemo'),
+  { loading: Spinner }
+);
+
+const CircularColorsDemo = dynamic(
+  () => import('@/components/CircularColorsDemo'),
   { loading: Spinner }
 );
 
@@ -42,7 +47,8 @@ async function BlogPost({ params }) {
           source={content}
           components={{
             pre: CodeSnippet,
-            DivisionsGroupDemo
+            DivisionGroupsDemo,
+            CircularColorsDemo
           }} />
       </div>
     </article>
